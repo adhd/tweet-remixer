@@ -12,6 +12,7 @@ axios.defaults.baseURL = 'http://localhost:3000'
 function App() {
   const [inputText, setInputText] = useState('')
   const [outputText, setOutputText] = useState('')
+  const [editedTweets, setEditedTweets] = useState({})  // Store edited versions
   const [isLoading, setIsLoading] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
   const [isLoadingSaved, setIsLoadingSaved] = useState(true)
@@ -97,9 +98,23 @@ function App() {
     }
   }
 
+  const handleTweetEdit = (index, newContent) => {
+    setEditedTweets(prev => ({
+      ...prev,
+      [index]: newContent
+    }))
+  }
+
   const characterCount = inputText.length
   const isOverLimit = characterCount > 10000
   const remainingCharacters = 10000 - characterCount
+
+  const adjustTextareaHeight = (textarea) => {
+    if (textarea) {
+      textarea.style.height = 'auto'
+      textarea.style.height = textarea.scrollHeight + 'px'
+    }
+  }
 
   return (
     <main className="min-h-screen bg-black overflow-x-hidden">
@@ -210,10 +225,27 @@ function App() {
                         />
                         <div className="relative z-10 text-gray-900 text-[15px] whitespace-pre-wrap p-4 rounded-xl bg-white">
                           <div className="flex justify-between gap-4">
-                            <div className="flex-1">{tweet}</div>
-                            <div className="flex-shrink-0 flex items-center gap-2">
+                            <div className="flex-1">
+                              <textarea
+                                ref={(el) => {
+                                  if (el) adjustTextareaHeight(el)
+                                }}
+                                value={editedTweets[index] ?? tweet}
+                                onChange={(e) => {
+                                  handleTweetEdit(index, e.target.value)
+                                  adjustTextareaHeight(e.target)
+                                }}
+                                className="w-full text-[15px] resize-none focus:outline-none focus:ring-1 focus:ring-blue-500/20 rounded p-2 leading-relaxed block"
+                                style={{
+                                  minHeight: '24px',
+                                  height: 'auto',
+                                  overflow: 'hidden'
+                                }}
+                              />
+                            </div>
+                            <div className="flex-shrink-0 flex items-start gap-2 pt-2">
                               <button
-                                onClick={() => window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(tweet)}`, '_blank')}
+                                onClick={() => window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(editedTweets[index] ?? tweet)}`, '_blank')}
                                 className="text-gray-400 hover:text-blue-400 transition-colors"
                                 title="Tweet this"
                               >
@@ -222,11 +254,15 @@ function App() {
                                 </svg>
                               </button>
                               <button
-                                onClick={() => handleSaveTweet(tweet)}
+                                onClick={() => handleSaveTweet(editedTweets[index] ?? tweet)}
                                 disabled={isSaving}
-                                className="text-gray-400 hover:text-gray-600 disabled:opacity-50"
+                                className="text-gray-400 hover:text-gray-600 disabled:opacity-50 group relative"
+                                title="Save tweet"
                               >
                                 <BookmarkIcon className="w-5 h-5" />
+                                {editedTweets[index] && editedTweets[index] !== tweet && (
+                                  <span className="absolute -top-1 -right-1 w-2 h-2 bg-blue-500 rounded-full" />
+                                )}
                               </button>
                             </div>
                           </div>
