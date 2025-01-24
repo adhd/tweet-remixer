@@ -102,20 +102,20 @@ function App() {
   const remainingCharacters = 10000 - characterCount
 
   return (
-    <main className="min-h-screen bg-black">
-      <div className="container mx-auto px-4 py-16 relative">
-        {/* Persistent Saved Tweets Button */}
+    <main className="min-h-screen bg-black overflow-x-hidden">
+      <div className="container mx-auto px-4 py-16">
+        {/* Fixed position button without transform */}
         <button
           onClick={() => setShowSaved(!showSaved)}
-          className="fixed top-4 right-4 z-50 flex items-center gap-2 px-3 py-2 bg-white/10 hover:bg-white/20 rounded-full text-white/70 hover:text-white transition-all"
+          className="fixed top-4 right-4 z-50 flex items-center gap-2 px-4 py-3 bg-white/20 hover:bg-white/30 rounded-full text-white transition-all backdrop-blur-md shadow-lg"
         >
-          <BookmarkIcon className="w-4 h-4" />
-          <span className="text-sm">Saved ({savedTweets.length})</span>
+          <BookmarkIcon className="w-5 h-5" />
+          <span className="text-sm font-medium">({savedTweets.length})</span>
         </button>
 
         <HeroHeader />
-        <div className="flex gap-8">
-          <div className="flex-1 max-w-[640px] mx-auto px-8 py-12">
+        <div className="relative">
+          <div className="flex-1 max-w-[640px] mx-auto px-4 sm:px-8 py-12">
             <div className="space-y-8 bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
               {error && (
                 <div className="bg-red-50 text-red-600 px-4 py-2 rounded-lg text-sm">
@@ -239,40 +239,56 @@ function App() {
             </div>
           </div>
 
-          {/* Saved Tweets Sidebar */}
-          <div className={`fixed top-0 right-0 h-full w-80 bg-white shadow-lg transform transition-transform duration-300 ease-in-out ${showSaved ? 'translate-x-0' : 'translate-x-full'}`}>
-            <div className="p-6">
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-lg font-semibold">Saved Tweets</h2>
+          {/* Backdrop */}
+          <div 
+            className={`fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity duration-300 z-40 
+              ${showSaved ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+            onClick={() => setShowSaved(false)}
+          />
+          
+          {/* Full-screen mobile sidebar */}
+          <div 
+            className={`fixed inset-0 bg-white z-50 overflow-y-auto overflow-x-hidden md:right-0 md:left-auto md:w-80
+              transform transition-transform duration-300 ease-in-out
+              ${showSaved ? 'translate-x-0' : 'translate-x-full'}`}
+          >
+            <div className="p-6 max-w-lg mx-auto md:max-w-none">
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-xl font-semibold">Saved Tweets</h2>
                 <button
                   onClick={() => setShowSaved(false)}
-                  className="text-gray-500 hover:text-gray-700"
+                  className="p-2 hover:bg-gray-100 rounded-full transition-colors"
                 >
-                  <XMarkIcon className="w-5 h-5" />
+                  <XMarkIcon className="w-6 h-6" />
                 </button>
               </div>
+              
               <div className="space-y-4">
                 {isLoadingSaved ? (
-                  <div className="text-center py-4">
-                    <ArrowPathIcon className="w-5 h-5 animate-spin mx-auto" />
+                  <div className="text-center py-8">
+                    <ArrowPathIcon className="w-6 h-6 animate-spin mx-auto" />
                   </div>
                 ) : (
                   <>
-                    {savedTweets.map((tweet) => (
-                      <div key={tweet.id} className="relative bg-gray-50 rounded-lg p-3 text-sm">
-                        <div className="flex justify-between gap-2">
-                          <div className="flex-1">{tweet.content}</div>
-                          <button
-                            onClick={() => handleRemoveSaved(tweet.id)}
-                            className="flex-shrink-0 text-gray-400 hover:text-gray-600"
-                          >
-                            <XMarkIcon className="w-4 h-4" />
-                          </button>
-                        </div>
+                    {savedTweets.length === 0 ? (
+                      <div className="text-center py-8">
+                        <BookmarkIcon className="w-8 h-8 mx-auto text-gray-400 mb-2" />
+                        <p className="text-gray-500">No saved tweets yet</p>
                       </div>
-                    ))}
-                    {savedTweets.length === 0 && (
-                      <p className="text-gray-500 text-center">No saved tweets yet</p>
+                    ) : (
+                      savedTweets.map((tweet) => (
+                        <div key={tweet.id} className="relative bg-gray-50 rounded-lg p-4 text-sm">
+                          <div className="flex justify-between gap-3">
+                            <div className="flex-1">{tweet.content}</div>
+                            <button
+                              onClick={() => handleRemoveSaved(tweet.id)}
+                              className="flex-shrink-0 p-1 hover:bg-gray-200 rounded-full transition-colors"
+                            >
+                              <XMarkIcon className="w-5 h-5 text-gray-500" />
+                            </button>
+                          </div>
+                        </div>
+                      ))
                     )}
                   </>
                 )}
