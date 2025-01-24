@@ -2,6 +2,8 @@
 
 AI-powered tweet generator with Supabase storage and direct Twitter integration.
 
+![TweetGen Demo](assets/demo.gif)
+
 ## Prerequisites
 
 1. Node.js v18+
@@ -87,7 +89,7 @@ The frontend will automatically proxy API requests to the backend.
 ## Features
 
 - ✨ Clean, modern UI with Tailwind CSS
-- �� Powered by Claude 3 Sonnet for creative text remixing
+- 🚀 Powered by Claude 3 Sonnet for creative text remixing
 - 🚀 Built with Vite for fast development
 - 💾 Persistent storage with Supabase
 - 📝 Editable generated tweets
