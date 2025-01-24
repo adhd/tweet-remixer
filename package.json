@@ -17,6 +17,7 @@
     "@tsparticles/slim": "^3.8.0",
     "autoprefixer": "^10.4.20",
     "axios": "^1.7.9",
+    "canvas-confetti": "^1.9.2",
     "clsx": "^2.1.1",
     "framer-motion": "^12.0.3",
     "postcss": "^8.5.1",

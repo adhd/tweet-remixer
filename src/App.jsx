@@ -1,10 +1,12 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import axios from 'axios'
+import { motion } from 'framer-motion'
 import { RainbowButton } from './components/ui/rainbow-button'
 import { ArrowPathIcon, SparklesIcon, ClipboardIcon, BookmarkIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import HeroHeader from "./components/hero-header";
 import { GlowEffect } from './components/ui/glow-effect'
 import "./index.css";
+import confetti from 'canvas-confetti'
 
 // Configure axios
 axios.defaults.baseURL = 'http://localhost:3000'
@@ -72,14 +74,65 @@ function App() {
     }
   }
 
+  const makeShot = useCallback((particleRatio, opts) => {
+    console.log('makeShot called', { particleRatio, opts })
+    confetti({
+      ...opts,
+      origin: { y: 0.7, x: 0.5 },
+      colors: ['#1DA1F2', '#0894FF', '#C959DD', '#FF2E54'],
+      particleCount: Math.floor(300 * particleRatio),
+      spread: 70,
+      gravity: 1.2,
+      scalar: 1.2,
+      ticks: 300,
+      shapes: ['circle', 'square'],
+      disableForReducedMotion: true
+    })
+  }, [])
+
+  const fireConfetti = useCallback(() => {
+    console.log('fireConfetti called')
+    // First burst
+    makeShot(0.4, {
+      spread: 45,
+      startVelocity: 45
+    })
+
+    // Delayed second burst
+    setTimeout(() => {
+      makeShot(0.35, {
+        spread: 80,
+        startVelocity: 55
+      })
+    }, 200)
+
+    // Final burst
+    setTimeout(() => {
+      makeShot(0.3, {
+        spread: 100,
+        decay: 0.91,
+        startVelocity: 50
+      })
+    }, 400)
+  }, [makeShot])
+
   const handleSaveTweet = async (tweet) => {
     try {
       setIsSaving(true)
+      console.log('Saving tweet...')
       const response = await axios.post('/api/tweets', {
         content: tweet
       })
-      setSavedTweets([response.data, ...savedTweets])
-      setShowSaved(true) // Show the saved tweets panel
+      console.log('Tweet saved successfully, firing confetti')
+      
+      // Fire confetti immediately
+      fireConfetti()
+      
+      // Update UI after a small delay
+      setTimeout(() => {
+        setSavedTweets([response.data, ...savedTweets])
+        setShowSaved(true)
+      }, 500)
     } catch (err) {
       console.error('Failed to save tweet:', err)
       setError('Failed to save tweet')
@@ -191,24 +244,39 @@ function App() {
                       <button
                         onClick={() => setShowSaved(!showSaved)}
                         className="flex items-center space-x-1 text-sm text-gray-500 hover:text-gray-700 transition-colors"
+                        title="Saved tweets"
                       >
                         <BookmarkIcon className="w-4 h-4" />
-                        <span>Saved ({savedTweets.length})</span>
+                        <span className="hidden sm:inline">Saved ({savedTweets.length})</span>
                       </button>
                       <button
                         onClick={handleCopy}
                         className="flex items-center space-x-1 text-sm text-gray-500 hover:text-gray-700 transition-colors"
+                        title="Copy all tweets"
                       >
                         <ClipboardIcon className="w-4 h-4" />
-                        <span>{copied ? 'Copied!' : 'Copy'}</span>
+                        <span className="hidden sm:inline">{copied ? 'Copied!' : 'Copy'}</span>
                       </button>
                     </div>
                   </div>
                   {outputText.split('\n\n')
                     .filter(tweet => !tweet.match(/^-+TWEET-+$/))
                     .map((tweet, index) => (
-                    <div key={index} className="relative mb-4 last:mb-0">
-                      <div className="relative bg-white rounded-xl">
+                    <div key={index} className="mb-6 last:mb-0">
+                      <motion.div 
+                        className="relative bg-white rounded-xl shadow-sm hover:shadow-lg transition-shadow duration-300"
+                        initial={{ y: 0 }}
+                        whileHover={{ 
+                          y: [-8, -12, -8],
+                          transition: { 
+                            y: {
+                              repeat: Infinity,
+                              duration: 4,
+                              ease: "easeInOut"
+                            }
+                          }
+                        }}
+                      >
                         <GlowEffect
                           colors={['#0894FF', '#C959DD', '#FF2E54', '#FF9004']}
                           mode="breathe"
@@ -228,7 +296,10 @@ function App() {
                             <div className="flex-1">
                               <textarea
                                 ref={(el) => {
-                                  if (el) adjustTextareaHeight(el)
+                                  if (el) {
+                                    // Set a small timeout to ensure content is rendered
+                                    setTimeout(() => adjustTextareaHeight(el), 0)
+                                  }
                                 }}
                                 value={editedTweets[index] ?? tweet}
                                 onChange={(e) => {
@@ -241,6 +312,7 @@ function App() {
                                   height: 'auto',
                                   overflow: 'hidden'
                                 }}
+                                rows={1}
                               />
                             </div>
                             <div className="flex-shrink-0 flex items-start gap-2 pt-2">
@@ -267,7 +339,7 @@ function App() {
                             </div>
                           </div>
                         </div>
-                      </div>
+                      </motion.div>
                     </div>
                   ))}
                 </div>
