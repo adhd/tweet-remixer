@@ -3,6 +3,7 @@ import axios from 'axios'
 import { RainbowButton } from './components/ui/rainbow-button'
 import { ArrowPathIcon, SparklesIcon, ClipboardIcon } from '@heroicons/react/24/outline'
 import HeroHeader from "./components/hero-header";
+import { GlowEffect } from './components/ui/glow-effect'
 import "./index.css";
 
 function App() {
@@ -100,37 +101,35 @@ function App() {
                   </label>
                   <button
                     onClick={handleCopy}
-                    className="inline-flex items-center space-x-1 text-sm text-gray-500 hover:text-gray-700 transition-colors"
+                    className="flex items-center space-x-1 text-sm text-gray-500 hover:text-gray-700 transition-colors"
                   >
                     <ClipboardIcon className="w-4 h-4" />
                     <span>{copied ? 'Copied!' : 'Copy'}</span>
                   </button>
                 </div>
-                <div className="space-y-4">
-                  {outputText.split('\n\n').map((tweet, index) => (
-                    tweet.trim() && (
-                      <div 
-                        key={index}
-                        className="bg-gray-50 rounded-xl p-4 text-gray-900 text-[15px] border border-gray-100 hover:border-gray-200 transition-colors"
-                      >
-                        <div className="flex justify-between items-start gap-4">
-                          <div className="flex-1">{tweet.trim()}</div>
-                          <a
-                            href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(tweet.trim())}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-blue-500 hover:text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors"
-                          >
-                            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                              <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-                            </svg>
-                            Tweet
-                          </a>
-                        </div>
+                {outputText.split('\n\n').map((tweet, index) => (
+                  <div key={index} className="relative mb-4 last:mb-0">
+                    <div className="relative bg-white rounded-xl">
+                      <GlowEffect
+                        colors={['#0894FF', '#C959DD', '#FF2E54', '#FF9004']}
+                        mode="breathe"
+                        blur="softest"
+                        scale={1.000025}
+                        duration={4}
+                        transition={{
+                          repeat: Infinity,
+                          duration: 4,
+                          ease: "easeInOut",
+                          delay: index * 0.8,
+                          repeatType: "mirror"
+                        }}
+                      />
+                      <div className="relative z-10 text-gray-900 text-[15px] whitespace-pre-wrap p-4 rounded-xl bg-white">
+                        {tweet}
                       </div>
-                    )
-                  ))}
-                </div>
+                    </div>
+                  </div>
+                ))}
               </div>
             )}
           </div>
