@@ -73,7 +73,7 @@ The frontend will automatically proxy API requests to the backend.
 
 ## API Endpoints
 
-- `POST /api/generate` - Generate tweet variations
+- `POST /api/generate` - Generate tweet variations (max 10,000 characters)
 - `POST /api/tweets` - Save a tweet
 - `GET /api/tweets` - Get all saved tweets
 - `DELETE /api/tweets/:id` - Delete a saved tweet
@@ -82,15 +82,15 @@ The frontend will automatically proxy API requests to the backend.
 
 - Frontend: React, Tailwind, Framer Motion
 - Backend: Express, Supabase (PostgreSQL), Prisma
-- AI: Claude 3 Opus
+- AI: Claude 3 Sonnet
 
 ## Features
 
 - ✨ Clean, modern UI with Tailwind CSS
-- 🤖 Powered by Claude AI for creative text remixing
+- �� Powered by Claude 3 Sonnet for creative text remixing
 - 🚀 Built with Vite for fast development
 - 💾 Persistent storage with Supabase
-- 📝 Simple and intuitive text interface
+- 📝 Editable generated tweets
 - 📈 Real-time character counting
 - 🎨 Animated UI components
 
