@@ -20,11 +20,7 @@ function App() {
         text: inputText
       })
       
-      const tweet = response.data.content[0].text
-      setOutputText(tweet)
-      
-      console.log('Tweet length:', tweet.length)
-      console.log('Tweet:', tweet)
+      setOutputText(response.data.content[0].text)
     } catch (error) {
       console.error('Error remixing text:', error)
       setOutputText('Error occurred while remixing text. Please try again.')
@@ -100,7 +96,7 @@ function App() {
               <div className="relative">
                 <div className="flex justify-between items-center mb-2">
                   <label className="text-[15px] font-medium text-gray-700">
-                    Generated Tweet
+                    Generated Text
                   </label>
                   <button
                     onClick={handleCopy}
@@ -110,11 +106,8 @@ function App() {
                     <span>{copied ? 'Copied!' : 'Copy'}</span>
                   </button>
                 </div>
-                <div className="relative bg-gray-50 rounded-xl p-4 text-gray-900 text-[15px]">
+                <div className="relative bg-gray-50 rounded-xl p-4 text-gray-900 text-[15px] whitespace-pre-line">
                   {outputText}
-                  <div className="absolute bottom-3 right-3 text-sm text-gray-400">
-                    {outputText.length}/280
-                  </div>
                 </div>
               </div>
             )}
@@ -124,7 +117,7 @@ function App() {
             <p>
               Built with AI to help you create more engaging tweets.
               <br />
-              Character limits: Input 10,000 / Output 280
+              Input limit: 10,000 characters
             </p>
           </footer>
         </div>

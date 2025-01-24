@@ -1,19 +1,39 @@
 export const PROMPTS = {
-  tweetRemix: (text) => `[CRITICAL: If you write more than 280 characters, you have FAILED your task. No exceptions.]
-
-Write ONE tweet (max 280 chars) that captures THE SINGLE MOST IMPORTANT point from this text:
+  tweetRemix: (text) => `write 5 different lowercase tweets from this. each should be an unobvious insight that makes people think:
 
 "${text}"
 
-RULES (EVERY RULE IS MANDATORY):
-1. HARD LIMIT: 280 characters maximum
-2. EXTRACT one key insight only
-3. DO NOT try to include everything
-4. DO NOT rewrite or paraphrase
-5. BE RUTHLESS about cutting words
-6. SHORTER IS BETTER
-7. Count your characters TWICE
-8. If unsure, write less
+rules:
+1. all lowercase
+2. no hashtags or emojis
+3. no thread markers (1/5 etc)
+4. no "let me tell you why..."
+5. no corporate/influencer speak
+6. no obvious statements
+7. be witty when it fits naturally
+8. make each insight genuinely surprising
+9. CRITICAL: separate each tweet with TWO newlines (\\n\\n)
 
-Remember: You are writing a TWEET, not a summary. Be punchy and concise.`
+style guide:
+- write like you're sharing thoughts with smart friends
+- be casual but insightful
+- it's ok to be a bit weird/quirky
+- focus on the non-obvious angles
+- don't try to sound profound
+- just say interesting things simply
+
+format exactly like this:
+first tweet here
+
+second tweet here
+
+third tweet here
+
+fourth tweet here
+
+fifth tweet here
+
+IMPORTANT: there must be an empty line between each tweet. use double newlines (\\n\\n).
+
+remember: each tweet should make people stop and think "huh, i never thought about it that way"`
 } 

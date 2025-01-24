@@ -56,30 +56,32 @@ app.post('/api/remix', async (req, res) => {
     try {
       const response = await anthropic.messages.create({
         model: "claude-3-opus-20240229",
-        max_tokens: 150,
+        max_tokens: 2000,
         messages: [{
           role: "user",
           content: PROMPTS.tweetRemix(text)
-        }],
-        system: "You are a tweet writer with ONE JOB: Write tweets under 280 characters. If you write more than 280 characters, you have FAILED. No exceptions."
+        }]
       })
       
-      console.log('Response:', response)
+      console.log('Raw response text:', JSON.stringify(response.content[0].text))
       
-      let tweetText = ''
+      let outputText = ''
       if (response.content && response.content[0] && response.content[0].text) {
-        tweetText = response.content[0].text.trim()
-        
-        if (tweetText.length > 280) {
-          console.warn('Response exceeded 280 characters, truncating...')
-          tweetText = tweetText.slice(0, 277) + '...'
-        }
+        // Ensure double newlines are preserved
+        outputText = response.content[0].text
+          .trim()
+          .replace(/\r\n/g, '\n')  // Convert Windows line endings
+          .replace(/\r/g, '\n')    // Convert old Mac line endings
+          .split('\n')             // Split into lines
+          .map(line => line.trim()) // Trim each line
+          .filter(line => line)     // Remove empty lines
+          .join('\n\n')            // Join with double newlines
       } else {
         throw new Error('Unexpected response format from Claude API')
       }
       
       return res.json({
-        content: [{ text: tweetText }]
+        content: [{ text: outputText }]
       })
     } catch (apiError) {
       // Log the complete error
