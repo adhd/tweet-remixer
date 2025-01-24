@@ -4,7 +4,9 @@ import { dirname, join } from 'path'
 import express from 'express'
 import { Anthropic } from '@anthropic-ai/sdk'
 import cors from 'cors'
+import process from 'node:process'
 import { PROMPTS } from './config/prompts.js'
+import { saveTweet, getAllTweets, deleteTweet } from './db/client.js'
 
 // Get directory path for ES modules
 const __filename = fileURLToPath(import.meta.url)
@@ -104,6 +106,47 @@ app.post('/api/remix', async (req, res) => {
       error: 'Error processing request',
       details: error.message
     })
+  }
+})
+
+// New endpoints for saved tweets
+app.post('/api/tweets', async (req, res) => {
+  try {
+    const { content } = req.body
+    if (!content) {
+      return res.status(400).json({ error: 'Tweet content is required' })
+    }
+    const tweet = await saveTweet(content)
+    res.status(201).json(tweet)
+  } catch (error) {
+    console.error('Error saving tweet:', error)
+    res.status(500).json({ error: 'Failed to save tweet' })
+  }
+})
+
+app.get('/api/tweets', async (req, res) => {
+  try {
+    const tweets = await getAllTweets()
+    // Always return a 200 status, even with empty array
+    res.json(tweets)
+  } catch (error) {
+    console.error('Error fetching tweets:', error)
+    // Return empty array instead of error
+    res.json([])
+  }
+})
+
+app.delete('/api/tweets/:id', async (req, res) => {
+  try {
+    const id = parseInt(req.params.id)
+    if (isNaN(id)) {
+      return res.status(400).json({ error: 'Invalid tweet ID' })
+    }
+    await deleteTweet(id)
+    res.status(204).send()
+  } catch (error) {
+    console.error('Error deleting tweet:', error)
+    res.status(500).json({ error: 'Failed to delete tweet' })
   }
 })
 
