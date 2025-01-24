@@ -12,7 +12,7 @@ rules:
 6. no obvious statements
 7. be witty when it fits naturally
 8. make each insight genuinely surprising
-9. CRITICAL: separate each tweet with TWO newlines (\\n\\n)
+9. CRITICAL: separate each tweet with the delimiter "---TWEET---" on its own line
 
 style guide:
 - write like you're sharing thoughts with smart friends
@@ -24,16 +24,16 @@ style guide:
 
 format exactly like this:
 first tweet here
-
+---TWEET---
 second tweet here
-
+---TWEET---
 third tweet here
-
+---TWEET---
 fourth tweet here
-
+---TWEET---
 fifth tweet here
 
-IMPORTANT: there must be an empty line between each tweet. use double newlines (\\n\\n).
+IMPORTANT: each tweet must be separated by the delimiter "---TWEET---" on its own line.
 
 remember: each tweet should make people stop and think "huh, i never thought about it that way"`
 } 

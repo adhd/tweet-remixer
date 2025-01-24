@@ -96,7 +96,7 @@ function App() {
               <div className="relative">
                 <div className="flex justify-between items-center mb-2">
                   <label className="text-[15px] font-medium text-gray-700">
-                    Generated Text
+                    Generated Tweets
                   </label>
                   <button
                     onClick={handleCopy}
@@ -106,8 +106,30 @@ function App() {
                     <span>{copied ? 'Copied!' : 'Copy'}</span>
                   </button>
                 </div>
-                <div className="relative bg-gray-50 rounded-xl p-4 text-gray-900 text-[15px] whitespace-pre-line">
-                  {outputText}
+                <div className="space-y-4">
+                  {outputText.split('\n\n').map((tweet, index) => (
+                    tweet.trim() && (
+                      <div 
+                        key={index}
+                        className="bg-gray-50 rounded-xl p-4 text-gray-900 text-[15px] border border-gray-100 hover:border-gray-200 transition-colors"
+                      >
+                        <div className="flex justify-between items-start gap-4">
+                          <div className="flex-1">{tweet.trim()}</div>
+                          <a
+                            href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(tweet.trim())}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-blue-500 hover:text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors"
+                          >
+                            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                              <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                            </svg>
+                            Tweet
+                          </a>
+                        </div>
+                      </div>
+                    )
+                  ))}
                 </div>
               </div>
             )}
